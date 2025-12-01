@@ -1,4 +1,3 @@
-
 import turtle
 import math
 
@@ -7,18 +6,14 @@ screen = turtle.Screen()
 screen.setup(900, 500)
 screen.bgcolor(0, 0.9, 0.9)
 screen.title("Village Scenery")
-screen.tracer(0)
+screen.tracer(0)  # manual updates for smooth animation
 
 # Global variables for animation
-bx = 50
-ax = 10
-
-def draw_circle(t, rx, ry, cx, cy):
-    """Draw an ellipse/circle"""
-    pass  # Not used anymore
+bx = 50   # boat/cloud x offset
+ax = 10   # unused, kept for compatibility
 
 def draw_polygon(t, points):
-    """Draw a polygon from list of points"""
+    """Draw a filled polygon from list of points using turtle t."""
     t.penup()
     t.goto(points[0])
     t.pendown()
@@ -29,7 +24,7 @@ def draw_polygon(t, points):
     t.end_fill()
 
 def draw_circle_with_turtle(t, rx, ry, cx, cy):
-    """Draw an ellipse/circle with specific turtle"""
+    """Draw an ellipse/circle with specific turtle t."""
     t.penup()
     t.goto(cx, cy - ry)
     t.pendown()
@@ -40,30 +35,6 @@ def draw_circle_with_turtle(t, rx, ry, cx, cy):
         y = ry * math.sin(angle) + cy
         t.goto(x, y)
     t.end_fill()
-
-def draw_ground():
-    """Not used - integrated into draw_background"""
-    pass
-
-def draw_river():
-    """Not used - integrated into draw_background"""
-    pass
-
-def draw_hills():
-    """Not used - integrated into draw_background"""
-    pass
-
-def draw_houses():
-    """Not used - integrated into draw_foreground"""
-    pass
-
-def draw_tree():
-    """Not used - integrated into draw_foreground"""
-    pass
-
-def draw_sun():
-    """Not used - integrated into draw_foreground"""
-    pass
 
 # Create persistent turtles for each layer
 background_turtle = turtle.Turtle()
@@ -83,9 +54,8 @@ foreground_turtle.hideturtle()
 foreground_turtle.speed(0)
 
 def draw_boat_with_turtle(t, offset):
-    """Draw boat using a specific turtle"""
-    t.clear()
-    
+    """Draw boat using a specific turtle t at horizontal offset."""
+    # We don't clear here because we clear before calling this in animate
     # Boat hull (bottom)
     t.color(0, 0, 0)
     t.penup()
@@ -127,11 +97,10 @@ def draw_boat_with_turtle(t, offset):
     t.end_fill()
 
 def draw_clouds_with_turtle(t, offset):
-    """Draw clouds using a specific turtle"""
+    """Draw clouds using a specific turtle t at horizontal offset."""
     t.clear()
     t.color(1, 1, 1)
     
-    # Helper function to draw circle with this turtle
     def draw_c(rx, ry, cx, cy):
         t.penup()
         t.goto(cx, cy - ry)
@@ -155,9 +124,9 @@ def draw_clouds_with_turtle(t, offset):
     draw_c(15, 20, 125 + offset, 170)
 
 def draw_background():
-    """Draw background elements once (ground, river, hills)"""
+    """Draw background elements once (ground, river, hills)."""
     t = background_turtle
-    
+    t.clear()
     # Ground
     t.color(0, 1, 0)
     draw_polygon(t, [(-450, -250), (450, -250), (450, 50), (-450, 50)])
@@ -176,11 +145,15 @@ def draw_background():
     t.color(184/255, 134/255, 11/255)
     draw_polygon(t, [(50, 50), (470, 50), (150, 200)])
 
+    #Sun
+    background_turtle.color(255/255, 215/255, 0)
+    draw_circle_with_turtle(background_turtle, 25, 30, -75, 200)
+
+
 def draw_foreground():
-    """Draw foreground elements once (houses, tree, sun)"""
+    """Draw foreground elements (houses, tree, sun) using foreground_turtle."""
     t = foreground_turtle
-    
-    # 2nd House (right)
+    # Note: we do NOT call t.clear() here because animate will clear it when redrawing.
     t.color(210/255, 105/255, 30/255)
     draw_polygon(t, [(-150, -30), (-50, -30), (-75, 20), (-120, 20)])
     t.color(244/255, 164/255, 96/255)
@@ -218,34 +191,42 @@ def draw_foreground():
     draw_circle_with_turtle(t, 30, 30, -180, 120)
     draw_circle_with_turtle(t, 25, 30, -195, 150)
     
-    # Sun
-    t.color(255/255, 215/255, 0)
-    draw_circle_with_turtle(t, 25, 30, -75, 200)
 
 def animate():
-    """Main animation loop"""
+    """Main animation loop — draw boat between background & foreground."""
     global bx, ax
+
     
-    # Only redraw animated elements
+    boat_turtle.clear()
+    
+    cloud_turtle.clear()
+    
+    foreground_turtle.clear()
+
+    
     draw_boat_with_turtle(boat_turtle, bx)
-    draw_clouds_with_turtle(cloud_turtle, bx)
+
     
+    draw_clouds_with_turtle(cloud_turtle, bx)
+
+    
+    draw_foreground()
+
     # Update positions
-    bx += 1.5
+    bx += 1.9
     if bx > 500:
         bx = -550
-    
-    ax += 0.05
-    if ax > 500:
-        ax = -500
-    
+
+    # commit visual update
     screen.update()
+    # schedule next frame
     screen.ontimer(animate, 20)
 
-# Draw static layers once
+
 draw_background()
+
 draw_foreground()
 
-# Start animation
+# animation loop
 animate()
 screen.mainloop()
