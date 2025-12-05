@@ -260,6 +260,294 @@ def draw_birds_flying(t, positions, frame):
     for pos in positions:
         draw_bird(t, pos[0], pos[1], wing_up)
 
+def draw_3d_cow(t):
+    """Draw a highly realistic 3D Minecraft-style cow with isometric perspective."""
+    base_x = 350
+    base_y = -150
+    
+    # Define colors for 3D shading (light=top, medium=front, dark=side)
+    white_top = (1, 1, 1)
+    white_front = (0.9, 0.9, 0.9)
+    white_side = (0.75, 0.75, 0.75)
+    
+    black_top = (0.2, 0.2, 0.2)
+    black_front = (0.1, 0.1, 0.1)
+    black_side = (0.05, 0.05, 0.05)
+    
+    pink_top = (1, 0.8, 0.8)
+    pink_front = (0.95, 0.7, 0.7)
+    pink_side = (0.85, 0.6, 0.6)
+    
+    brown_top = (0.6, 0.4, 0.2)
+    brown_front = (0.5, 0.3, 0.15)
+    brown_side = (0.4, 0.25, 0.1)
+    
+    # === BACK LEGS (4 rectangular prisms) ===
+    # Back-left leg
+    # Side face (darkest)
+    t.color(white_side)
+    draw_polygon(t, [(base_x - 22, base_y), (base_x - 22, base_y + 30),
+                     (base_x - 18, base_y + 32), (base_x - 18, base_y + 2)])
+    # Front face (medium)
+    t.color(white_front)
+    draw_polygon(t, [(base_x - 18, base_y + 2), (base_x - 18, base_y + 32),
+                     (base_x - 10, base_y + 32), (base_x - 10, base_y + 2)])
+    # Top face (lightest)
+    t.color(white_top)
+    draw_polygon(t, [(base_x - 22, base_y + 30), (base_x - 18, base_y + 32),
+                     (base_x - 10, base_y + 32), (base_x - 14, base_y + 30)])
+    
+    # Back-right leg
+    # Side face
+    t.color(white_side)
+    draw_polygon(t, [(base_x + 10, base_y), (base_x + 10, base_y + 30),
+                     (base_x + 14, base_y + 32), (base_x + 14, base_y + 2)])
+    # Front face
+    t.color(white_front)
+    draw_polygon(t, [(base_x + 14, base_y + 2), (base_x + 14, base_y + 32),
+                     (base_x + 22, base_y + 32), (base_x + 22, base_y + 2)])
+    # Top face
+    t.color(white_top)
+    draw_polygon(t, [(base_x + 10, base_y + 30), (base_x + 14, base_y + 32),
+                     (base_x + 22, base_y + 32), (base_x + 18, base_y + 30)])
+    
+    # === MAIN BODY (large rectangular prism) ===
+    # Side face (darkest) - left side
+    t.color(white_side)
+    draw_polygon(t, [(base_x - 30, base_y + 30), (base_x - 30, base_y + 55),
+                     (base_x - 20, base_y + 60), (base_x - 20, base_y + 35)])
+    # Front face (medium) - front
+    t.color(white_front)
+    draw_polygon(t, [(base_x - 20, base_y + 35), (base_x - 20, base_y + 60),
+                     (base_x + 30, base_y + 60), (base_x + 30, base_y + 35)])
+    # Top face (lightest)
+    t.color(white_top)
+    draw_polygon(t, [(base_x - 30, base_y + 55), (base_x - 20, base_y + 60),
+                     (base_x + 30, base_y + 60), (base_x + 20, base_y + 55)])
+    
+    # === BLACK SPOTS ON BODY (with 3D effect) ===
+    # Spot 1 on front face
+    t.color(black_front)
+    draw_polygon(t, [(base_x - 10, base_y + 45), (base_x - 10, base_y + 55),
+                     (base_x + 2, base_y + 55), (base_x + 2, base_y + 45)])
+    
+    # Spot 2 on front face
+    t.color(black_front)
+    draw_polygon(t, [(base_x + 10, base_y + 38), (base_x + 10, base_y + 50),
+                     (base_x + 22, base_y + 50), (base_x + 22, base_y + 38)])
+    
+    # Spot 3 on top face (lighter)
+    t.color(black_top)
+    draw_polygon(t, [(base_x - 15, base_y + 56), (base_x - 8, base_y + 58),
+                     (base_x + 0, base_y + 58), (base_x - 7, base_y + 56)])
+    
+    # Spot on side face (darkest)
+    t.color(black_side)
+    draw_polygon(t, [(base_x - 28, base_y + 40), (base_x - 28, base_y + 48),
+                     (base_x - 22, base_y + 50), (base_x - 22, base_y + 42)])
+    
+    # === NECK (connecting body to head) ===
+    # Side face
+    t.color(white_side)
+    draw_polygon(t, [(base_x - 30, base_y + 55), (base_x - 30, base_y + 65),
+                     (base_x - 26, base_y + 67), (base_x - 26, base_y + 57)])
+    # Front face
+    t.color(white_front)
+    draw_polygon(t, [(base_x - 26, base_y + 57), (base_x - 26, base_y + 67),
+                     (base_x - 18, base_y + 67), (base_x - 18, base_y + 57)])
+    # Top face
+    t.color(white_top)
+    draw_polygon(t, [(base_x - 30, base_y + 65), (base_x - 26, base_y + 67),
+                     (base_x - 18, base_y + 67), (base_x - 22, base_y + 65)])
+    
+    # === HEAD (rectangular prism) ===
+    # Side face (left)
+    t.color(white_side)
+    draw_polygon(t, [(base_x - 45, base_y + 65), (base_x - 45, base_y + 80),
+                     (base_x - 38, base_y + 83), (base_x - 38, base_y + 68)])
+    # Front face
+    t.color(white_front)
+    draw_polygon(t, [(base_x - 38, base_y + 68), (base_x - 38, base_y + 83),
+                     (base_x - 18, base_y + 83), (base_x - 18, base_y + 68)])
+    # Top face
+    t.color(white_top)
+    draw_polygon(t, [(base_x - 45, base_y + 80), (base_x - 38, base_y + 83),
+                     (base_x - 18, base_y + 83), (base_x - 25, base_y + 80)])
+    
+    # Black spot on head (front face)
+    t.color(black_front)
+    draw_polygon(t, [(base_x - 35, base_y + 72), (base_x - 35, base_y + 80),
+                     (base_x - 25, base_y + 80), (base_x - 25, base_y + 72)])
+    
+    # === SNOUT (rectangular prism extending from head) ===
+    # Side face
+    t.color(pink_side)
+    draw_polygon(t, [(base_x - 50, base_y + 68), (base_x - 50, base_y + 75),
+                     (base_x - 46, base_y + 76), (base_x - 46, base_y + 69)])
+    # Front face
+    t.color(pink_front)
+    draw_polygon(t, [(base_x - 46, base_y + 69), (base_x - 46, base_y + 76),
+                     (base_x - 38, base_y + 76), (base_x - 38, base_y + 69)])
+    # Top face
+    t.color(pink_top)
+    draw_polygon(t, [(base_x - 50, base_y + 75), (base_x - 46, base_y + 76),
+                     (base_x - 38, base_y + 76), (base_x - 42, base_y + 75)])
+    
+    # Nostrils (small dark squares on front)
+    t.color(0.1, 0.05, 0.05)
+    draw_polygon(t, [(base_x - 44, base_y + 72), (base_x - 44, base_y + 74),
+                     (base_x - 42, base_y + 74), (base_x - 42, base_y + 72)])
+    draw_polygon(t, [(base_x - 44, base_y + 70), (base_x - 44, base_y + 71.5),
+                     (base_x - 42, base_y + 71.5), (base_x - 42, base_y + 70)])
+    
+    # === EYES (small cubes) ===
+    # Left eye
+    t.color(0.05, 0.05, 0.05)
+    draw_polygon(t, [(base_x - 36, base_y + 78), (base_x - 36, base_y + 81),
+                     (base_x - 33, base_y + 81), (base_x - 33, base_y + 78)])
+    # Right eye
+    draw_polygon(t, [(base_x - 24, base_y + 78), (base_x - 24, base_y + 81),
+                     (base_x - 21, base_y + 81), (base_x - 21, base_y + 78)])
+    
+    # === EARS (3D triangular prisms) ===
+    # Left ear - side
+    t.color(pink_side)
+    draw_polygon(t, [(base_x - 42, base_y + 83), (base_x - 44, base_y + 90),
+                     (base_x - 40, base_y + 91)])
+    # Left ear - front
+    t.color(pink_front)
+    draw_polygon(t, [(base_x - 40, base_y + 83), (base_x - 40, base_y + 91),
+                     (base_x - 36, base_y + 91), (base_x - 36, base_y + 83)])
+    
+    # Right ear - front
+    t.color(pink_front)
+    draw_polygon(t, [(base_x - 22, base_y + 83), (base_x - 22, base_y + 91),
+                     (base_x - 18, base_y + 91), (base_x - 18, base_y + 83)])
+    # Right ear - top
+    t.color(pink_top)
+    draw_polygon(t, [(base_x - 22, base_y + 91), (base_x - 20, base_y + 92),
+                     (base_x - 18, base_y + 91)])
+    
+    # === HORNS (small 3D cones/pyramids) ===
+    # Left horn
+    t.color(brown_side)
+    draw_polygon(t, [(base_x - 40, base_y + 85), (base_x - 39, base_y + 93),
+                     (base_x - 37, base_y + 92)])
+    t.color(brown_front)
+    draw_polygon(t, [(base_x - 37, base_y + 85), (base_x - 37, base_y + 92),
+                     (base_x - 35, base_y + 85)])
+    
+    # Right horn
+    t.color(brown_side)
+    draw_polygon(t, [(base_x - 24, base_y + 85), (base_x - 23, base_y + 93),
+                     (base_x - 21, base_y + 92)])
+    t.color(brown_front)
+    draw_polygon(t, [(base_x - 21, base_y + 85), (base_x - 21, base_y + 92),
+                     (base_x - 19, base_y + 85)])
+    
+    # === FRONT LEGS (2 rectangular prisms - closer to viewer, in front) ===
+    # Front-left leg
+    # Side face
+    t.color(white_side)
+    draw_polygon(t, [(base_x - 18, base_y), (base_x - 18, base_y + 35),
+                     (base_x - 14, base_y + 37), (base_x - 14, base_y + 2)])
+    # Front face
+    t.color(white_front)
+    draw_polygon(t, [(base_x - 14, base_y + 2), (base_x - 14, base_y + 37),
+                     (base_x - 6, base_y + 37), (base_x - 6, base_y + 2)])
+    # Top face
+    t.color(white_top)
+    draw_polygon(t, [(base_x - 18, base_y + 35), (base_x - 14, base_y + 37),
+                     (base_x - 6, base_y + 37), (base_x - 10, base_y + 35)])
+    
+    # Front-right leg
+    # Side face
+    t.color(white_side)
+    draw_polygon(t, [(base_x + 14, base_y), (base_x + 14, base_y + 35),
+                     (base_x + 18, base_y + 37), (base_x + 18, base_y + 2)])
+    # Front face
+    t.color(white_front)
+    draw_polygon(t, [(base_x + 18, base_y + 2), (base_x + 18, base_y + 37),
+                     (base_x + 26, base_y + 37), (base_x + 26, base_y + 2)])
+    # Top face
+    t.color(white_top)
+    draw_polygon(t, [(base_x + 14, base_y + 35), (base_x + 18, base_y + 37),
+                     (base_x + 26, base_y + 37), (base_x + 22, base_y + 35)])
+    
+    # === HOOVES (dark blocks at bottom of legs) ===
+    # Back-left hoof
+    t.color(0.05, 0.05, 0.05)
+    draw_polygon(t, [(base_x - 22, base_y), (base_x - 22, base_y + 4),
+                     (base_x - 18, base_y + 5), (base_x - 18, base_y + 1)])
+    draw_polygon(t, [(base_x - 18, base_y + 1), (base_x - 18, base_y + 5),
+                     (base_x - 10, base_y + 5), (base_x - 10, base_y + 1)])
+    
+    # Back-right hoof
+    draw_polygon(t, [(base_x + 10, base_y), (base_x + 10, base_y + 4),
+                     (base_x + 14, base_y + 5), (base_x + 14, base_y + 1)])
+    draw_polygon(t, [(base_x + 14, base_y + 1), (base_x + 14, base_y + 5),
+                     (base_x + 22, base_y + 5), (base_x + 22, base_y + 1)])
+    
+    # Front-left hoof
+    draw_polygon(t, [(base_x - 18, base_y), (base_x - 18, base_y + 4),
+                     (base_x - 14, base_y + 5), (base_x - 14, base_y + 1)])
+    draw_polygon(t, [(base_x - 14, base_y + 1), (base_x - 14, base_y + 5),
+                     (base_x - 6, base_y + 5), (base_x - 6, base_y + 1)])
+    
+    # Front-right hoof
+    draw_polygon(t, [(base_x + 14, base_y), (base_x + 14, base_y + 4),
+                     (base_x + 18, base_y + 5), (base_x + 18, base_y + 1)])
+    draw_polygon(t, [(base_x + 18, base_y + 1), (base_x + 18, base_y + 5),
+                     (base_x + 26, base_y + 5), (base_x + 26, base_y + 1)])
+    
+    # === TAIL (3D segmented tail with tuft) ===
+    # Tail segment 1
+    t.color(white_side)
+    draw_polygon(t, [(base_x + 28, base_y + 50), (base_x + 28, base_y + 58),
+                     (base_x + 30, base_y + 58), (base_x + 30, base_y + 50)])
+    t.color(white_front)
+    draw_polygon(t, [(base_x + 30, base_y + 50), (base_x + 30, base_y + 58),
+                     (base_x + 34, base_y + 58), (base_x + 34, base_y + 50)])
+    
+    # Tail segment 2 (angled down)
+    t.color(white_side)
+    draw_polygon(t, [(base_x + 32, base_y + 48), (base_x + 32, base_y + 50),
+                     (base_x + 36, base_y + 48), (base_x + 36, base_y + 46)])
+    t.color(white_front)
+    draw_polygon(t, [(base_x + 36, base_y + 46), (base_x + 36, base_y + 48),
+                     (base_x + 40, base_y + 46), (base_x + 40, base_y + 44)])
+    
+    # Tail tuft (3D cluster at end)
+    t.color(black_side)
+    draw_polygon(t, [(base_x + 38, base_y + 40), (base_x + 38, base_y + 46),
+                     (base_x + 40, base_y + 46), (base_x + 40, base_y + 40)])
+    t.color(black_front)
+    draw_polygon(t, [(base_x + 40, base_y + 40), (base_x + 40, base_y + 46),
+                     (base_x + 45, base_y + 46), (base_x + 45, base_y + 40)])
+    t.color(black_top)
+    draw_polygon(t, [(base_x + 38, base_y + 46), (base_x + 40, base_y + 46),
+                     (base_x + 45, base_y + 46), (base_x + 43, base_y + 46)])
+    
+    # === UDDER (3D pink block underneath body) ===
+    # Side face
+    t.color(pink_side)
+    draw_polygon(t, [(base_x + 0, base_y + 30), (base_x + 0, base_y + 38),
+                     (base_x + 4, base_y + 39), (base_x + 4, base_y + 31)])
+    # Front face
+    t.color(pink_front)
+    draw_polygon(t, [(base_x + 4, base_y + 31), (base_x + 4, base_y + 39),
+                     (base_x + 14, base_y + 39), (base_x + 14, base_y + 31)])
+    # Top face
+    t.color(pink_top)
+    draw_polygon(t, [(base_x + 0, base_y + 38), (base_x + 4, base_y + 39),
+                     (base_x + 14, base_y + 39), (base_x + 10, base_y + 38)])
+    
+    # Udder teats (small 3D protrusions)
+    t.color(pink_front)
+    for teat_x in [5, 9, 13]:
+        draw_polygon(t, [(base_x + teat_x, base_y + 29), (base_x + teat_x, base_y + 31),
+                         (base_x + teat_x + 2, base_y + 31), (base_x + teat_x + 2, base_y + 29)])
+
 def draw_background():
     """Draw background elements once."""
     t = background_turtle
@@ -358,6 +646,9 @@ def draw_foreground(wind_sway):
     draw_circle_with_turtle(t, 25, 30, -205 + wind_sway, 120)
     draw_circle_with_turtle(t, 30, 30, -180 + wind_sway, 120)
     draw_circle_with_turtle(t, 25, 30, -195 + wind_sway, 150)
+    
+    # Draw 3D Cow on the field
+    draw_3d_cow(t)
 
 frame_count = 0
 
@@ -377,10 +668,9 @@ def animate():
     wind_offset = 3 * math.sin(frame_count * 0.05)
     
     # Draw animated elements
-    draw_car(car_turtle, car_x)
     draw_boat_with_turtle(boat_turtle, bx)
     draw_clouds_with_turtle(cloud_turtle, bx)
-    # draw_car(car_turtle, car_x)
+    draw_car(car_turtle, car_x)
     draw_windmill(windmill_turtle, windmill_angle, wind_offset * 0.5)
     draw_birds_flying(bird_turtle, bird_positions, frame_count)
     draw_foreground(wind_offset)
