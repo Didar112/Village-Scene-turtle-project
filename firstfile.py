@@ -40,6 +40,109 @@ def draw_circle_with_turtle(t, rx, ry, cx, cy):
         t.goto(x, y)
     t.end_fill()
 
+def midpoint_circle_algorithm(t, radius, cx, cy):
+    """Draw a filled circle using Midpoint Circle Algorithm (Bresenham's Circle)."""
+    t.penup()
+    
+    # Calculate all circle points using the algorithm
+    points = []
+    x = 0
+    y = radius
+    d = 1 - radius  # Initial decision parameter
+    
+    # Generate octant points
+    octant_points = []
+    while x <= y:
+        # Store the point for this iteration
+        octant_points.append((x, y))
+        
+        # Update decision parameter and coordinates
+        if d < 0:
+            d = d + 2 * x + 3
+        else:
+            d = d + 2 * (x - y) + 5
+            y -= 1
+        x += 1
+    
+    # Generate all 8 octants and collect unique points
+    circle_points = set()
+    for px, py in octant_points:
+        # All 8 symmetrical points
+        circle_points.add((cx + px, cy + py))
+        circle_points.add((cx - px, cy + py))
+        circle_points.add((cx + px, cy - py))
+        circle_points.add((cx - px, cy - py))
+        circle_points.add((cx + py, cy + px))
+        circle_points.add((cx - py, cy + px))
+        circle_points.add((cx + py, cy - px))
+        circle_points.add((cx - py, cy - px))
+    
+    # Sort points by angle to draw a proper filled circle
+    sorted_points = sorted(circle_points, key=lambda p: math.atan2(p[1] - cy, p[0] - cx))
+    
+    # Draw filled circle
+    if sorted_points:
+        t.goto(sorted_points[0])
+        t.pendown()
+        t.begin_fill()
+        for point in sorted_points:
+            t.goto(point)
+        t.goto(sorted_points[0])  # Close the circle
+        t.end_fill()
+
+def dda_line(t, x1, y1, x2, y2):
+    """Draw a line using DDA (Digital Differential Analyzer) Line Drawing Algorithm."""
+    t.penup()
+    
+    # Calculate differences
+    dx = x2 - x1
+    dy = y2 - y1
+    
+    # Calculate steps required
+    steps = int(max(abs(dx), abs(dy)))
+    
+    # Calculate increment in x and y for each step
+    if steps == 0:
+        return
+    
+    x_increment = dx / steps
+    y_increment = dy / steps
+    
+    # Start point
+    x = x1
+    y = y1
+    
+    t.goto(x, y)
+    t.pendown()
+    
+    # Draw line point by point
+    for i in range(steps + 1):
+        t.goto(round(x), round(y))
+        x += x_increment
+        y += y_increment
+
+def draw_sun_rays(t, cx, cy, inner_radius, outer_radius, num_rays):
+    """Draw sun rays using DDA line drawing algorithm."""
+    t.color(255/255, 215/255, 0)
+    t.pensize(2)
+    
+    for i in range(num_rays):
+        angle = (360 / num_rays) * i
+        rad = math.radians(angle)
+        
+        # Starting point (edge of sun)
+        x1 = cx + inner_radius * math.cos(rad)
+        y1 = cy + inner_radius * math.sin(rad)
+        
+        # Ending point (ray tip)
+        x2 = cx + outer_radius * math.cos(rad)
+        y2 = cy + outer_radius * math.sin(rad)
+        
+        # Draw ray using DDA algorithm
+        dda_line(t, x1, y1, x2, y2)
+    
+    t.pensize(1)
+
 # Create persistent turtles for each layer
 background_turtle = turtle.Turtle()
 background_turtle.hideturtle()
@@ -74,7 +177,7 @@ foreground_turtle.hideturtle()
 foreground_turtle.speed(0)
 
 def draw_boat_with_turtle(t, offset):
-    """Draw boat at horizontal offset."""
+    """Draw boat at horizontal offset with curved sail."""
     t.color(0, 0, 0)
     t.penup()
     t.goto(75 + offset, -30)
@@ -93,6 +196,7 @@ def draw_boat_with_turtle(t, offset):
         t.goto(point)
     t.end_fill()
     
+    # Mast
     t.color(160/255, 82/255, 45/255)
     t.penup()
     t.goto(110 + offset, 30)
@@ -102,17 +206,33 @@ def draw_boat_with_turtle(t, offset):
         t.goto(point)
     t.end_fill()
     
+    # Curved Sail (billowing towards the right - direction of travel)
     t.color(128/255, 0, 128/255)
     t.penup()
-    t.goto(85 + offset, 40)
+    t.goto(120 + offset, 125)  # Top of sail at mast
     t.pendown()
     t.begin_fill()
-    for point in [(140 + offset, 40), (140 + offset, 125), (85 + offset, 125), (85 + offset, 40)]:
-        t.goto(point)
+    
+    # Draw curved right edge of sail (billowing outward)
+    sail_points = []
+    for i in range(11):
+        t_param = i / 10
+        # Quadratic curve: curves outward to the right
+        curve_x = 120 + offset + 25 * (1 - (1 - t_param) ** 2)  # Parabolic curve
+        curve_y = 125 - 85 * t_param
+        sail_points.append((curve_x, curve_y))
+        t.goto(curve_x, curve_y)
+    
+    # Bottom edge
+    t.goto(120 + offset, 40)
+    
+    # Left edge (along mast)
+    t.goto(120 + offset, 125)
+    
     t.end_fill()
 
 def draw_clouds_with_turtle(t, offset):
-    """Draw clouds at horizontal offset."""
+    """Draw clouds at horizontal offset - repositioned further from boat."""
     t.color(1, 1, 1)
     
     def draw_c(rx, ry, cx, cy):
@@ -127,15 +247,25 @@ def draw_clouds_with_turtle(t, offset):
             t.goto(x, y)
         t.end_fill()
     
-    # 1st cloud
-    draw_c(20, 30, 210 + offset, 210)
-    draw_c(15, 20, 195 + offset, 210)
-    draw_c(15, 20, 225 + offset, 210)
+    # 1st cloud (moved further right and up)
+    draw_c(20, 30, 280 + offset, 220)
+    draw_c(15, 20, 265 + offset, 220)
+    draw_c(15, 20, 295 + offset, 220)
     
-    # 2nd cloud
-    draw_c(20, 30, 140 + offset, 170)
-    draw_c(15, 20, 155 + offset, 170)
-    draw_c(15, 20, 125 + offset, 170)
+    # 2nd cloud (moved further right)
+    draw_c(20, 30, 200 + offset, 180)
+    draw_c(15, 20, 215 + offset, 180)
+    draw_c(15, 20, 185 + offset, 180)
+    
+    # 3rd cloud (new pair - left side)
+    draw_c(18, 25, -100 + offset, 210)
+    draw_c(14, 18, -113 + offset, 210)
+    draw_c(14, 18, -87 + offset, 210)
+    
+    # 4th cloud (new pair - left side lower)
+    draw_c(18, 25, -30 + offset, 190)
+    draw_c(14, 18, -43 + offset, 190)
+    draw_c(14, 18, -17 + offset, 190)
 
 def draw_flowers():
     """Draw flowers on the ground."""
@@ -571,9 +701,12 @@ def draw_background():
     t.color(184/255, 134/255, 11/255)
     draw_polygon(t, [(50, 50), (470, 50), (150, 200)])
     
-    # Sun
+    # Sun (using Midpoint Circle Algorithm)
     t.color(255/255, 215/255, 0)
-    draw_circle_with_turtle(t, 25, 30, -75, 200)
+    midpoint_circle_algorithm(t, 27, -75, 200)
+    
+    # Sun rays (using DDA Line Drawing Algorithm)
+    draw_sun_rays(t, -75, 200, 32, 50, 12)  # 12 rays around the sun
     
     # Flowers
     draw_flowers()
@@ -667,12 +800,23 @@ def animate():
     # Wind effect (gentle sway)
     wind_offset = 3 * math.sin(frame_count * 0.05)
     
-    # Draw animated elements
-    draw_boat_with_turtle(boat_turtle, bx)
-    draw_clouds_with_turtle(cloud_turtle, bx)
+    # Draw animated elements in correct depth order
+    # 1. Car (behind everything on the road)
     draw_car(car_turtle, car_x)
+    
+    # 2. Boat (in front of car, on the river)
+    draw_boat_with_turtle(boat_turtle, bx)
+    
+    # 3. Clouds (in the sky)
+    draw_clouds_with_turtle(cloud_turtle, bx)
+    
+    # 4. Windmill (on the riverbank)
     draw_windmill(windmill_turtle, windmill_angle, wind_offset * 0.5)
+    
+    # 5. Birds (flying in sky)
     draw_birds_flying(bird_turtle, bird_positions, frame_count)
+    
+    # 6. Foreground (houses, tree, cow - closest to viewer)
     draw_foreground(wind_offset)
     
     # Update positions
