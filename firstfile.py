@@ -3,15 +3,15 @@ import turtle
 import math
 import random
 
-# =========================
+
 # WINDOW & SCALING
-# =========================
+
 BASE_W, BASE_H = 900, 500
 TARGET_W = 1920
-TARGET_H = int(TARGET_W * BASE_H / BASE_W)  # 1067 to preserve 1.8 ratio
+TARGET_H = int(TARGET_W * BASE_H / BASE_W)  
 
 SCALE = TARGET_W / BASE_W
-SPEED_FACTOR = 1.0 / SCALE  # reduce base-step so pixel-speed stays similar
+SPEED_FACTOR = 1.0 / SCALE  # reduce base-step  pixel-speed stays similar
 
 screen = turtle.Screen()
 screen.setup(TARGET_W, TARGET_H)
@@ -19,9 +19,9 @@ screen.bgcolor(0, 0.9, 0.9)
 screen.title("2D Village Scenery")
 screen.tracer(0)
 
-# =========================
-# SCALE HELPERS
-# =========================
+
+# SCALE HELPER
+
 def sx(x):
     return x * SCALE
 
@@ -39,9 +39,9 @@ def set_pensize_scaled(t, size):
     t.pensize(max(1, int(round(size * SCALE))))
 
 
-# =========================
-# animation variables (keep in BASE coordinates)
-# =========================
+
+# animation variables 
+
 bx = 50          # boat/cloud offset
 car_x = -450     # car position
 windmill_angle = 0
@@ -50,9 +50,9 @@ wind_offset = 0
 frame_count = 0
 
 
-# =========================
-# DRAWING PRIMITIVES (SCALED OUTPUT)
-# =========================
+
+# Helper func
+
 def draw_polygon(t, points):
     """Draw a filled polygon from list of BASE points; render scaled."""
     pts = [spt(p) for p in points]
@@ -179,9 +179,9 @@ def draw_sun_rays(t, cx, cy, inner_radius, outer_radius, num_rays):
     set_pensize_scaled(t, 1)
 
 
-# =========================
-# PERSISTENT TURTLES (LAYERS)
-# =========================
+
+# turtle layers
+
 background_turtle = turtle.Turtle(); background_turtle.hideturtle(); background_turtle.speed(0)
 bridge_turtle = turtle.Turtle(); bridge_turtle.hideturtle(); bridge_turtle.speed(0)
 boat_turtle = turtle.Turtle(); boat_turtle.hideturtle(); boat_turtle.speed(0)
@@ -192,9 +192,9 @@ bird_turtle = turtle.Turtle(); bird_turtle.hideturtle(); bird_turtle.speed(0)
 foreground_turtle = turtle.Turtle(); foreground_turtle.hideturtle(); foreground_turtle.speed(0)
 
 
-# =========================
-# SCENE OBJECTS (ORIGINAL CONTENT)
-# =========================
+
+# objects
+
 def draw_boat_with_turtle(t, offset):
     t.color(0, 0, 0)
     t.penup()
@@ -371,9 +371,9 @@ def draw_birds_flying(t, positions, frame):
         draw_bird(t, pos[0], pos[1], wing_up)
 
 
-# =========================
-# YOUR ORIGINAL 3D COW (UNCHANGED GEOMETRY; SCALED VIA draw_polygon)
-# =========================
+
+# 3d animal
+
 def draw_3d_cow(t):
     base_x = 350
     base_y = -150
@@ -607,9 +607,9 @@ def draw_3d_cow(t):
                          (base_x + teat_x + 2, base_y + 31), (base_x + teat_x + 2, base_y + 29)])
 
 
-# =========================
-# BACKGROUND / BRIDGE / FOREGROUND (ORIGINAL)
-# =========================
+
+# background -> bridge -> foreground
+
 def draw_background():
     t = background_turtle
     t.clear()
@@ -710,9 +710,9 @@ def draw_foreground(wind_sway):
     draw_3d_cow(t)
 
 
-# =========================
-# ANIMATION
-# =========================
+
+# animation part
+
 def animate():
     global bx, car_x, windmill_angle, bird_positions, wind_offset, frame_count
 
@@ -770,10 +770,11 @@ def animate():
     screen.ontimer(animate, 20)
 
 
-# =========================
-# INIT & RUN
-# =========================
+
+# mainloop and run
+
 draw_background()
 draw_bridge()
 animate()
 screen.mainloop()
+
